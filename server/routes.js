@@ -6,6 +6,8 @@ exports.loadRoutes = app => {
     app.post('/api/auth/register', AuthentificationController.register);
 
     // Login
+    app.post('/api/auth/login', AuthentificationController.login);
+    
     // Logout
 
     // Password recovery
