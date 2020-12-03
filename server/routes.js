@@ -1,6 +1,8 @@
-const AuthentificationController = require("./controllers/AuthentificationController")
+const AuthentificationController = require("./controllers/AuthentificationController");
+const AuthenticationMiddleware = require("./middlewares/AuthenticationMiddleware");
 
 exports.loadRoutes = app => {
+    app.use("/api", AuthenticationMiddleware);
     // Authentification
     // Registration
     app.post('/api/auth/register', AuthentificationController.register);
