@@ -1,6 +1,7 @@
 const User = require('../models/usersModel');
 const crypto = require("crypto");
 const nodemon = require('nodemon');
+const { exception } = require('console');
 
 const EMAIL_REGEX = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 /**
@@ -77,9 +78,32 @@ class _AuthentificationController {
     } // user registration
 
     async login(res, req) {
+        // Récupération des informations lors de la connexion
+        const {username, password} = req.body;
+        
         // Vérifier que l'utilisateur existe
+        const user = await User.findOne({
+            username
+        });
+        
+        if(!user)
+            return res.status(400).send("UNSERNAME_NOT_FOUND");
+        
+        // Test de vérification des mots de passes
+        const hash = crypto.createHash("sha512", user.salt);
+        hash.update(password);
+        const hashedPassword = hash.digest("hex");
+
+        if(!user.password === hashedPassword)
+            return res.status(400).send("WRONG_PASSWORD");
 
         // Connexion de l'utilisateur
+        try {
+            
+        } catch(exception) {
+            console.error(exception);
+            return res.status(400).send("SERVER_ERROR");
+        }
 
     } // user login
 
