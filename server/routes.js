@@ -20,5 +20,6 @@ exports.loadRoutes = app => {
     app.put('/api/spot/spotId', SpotController.updateSpot);
 
     // Get all spots
+    app.get('/api/spot', SpotController.getSpots);
     // Get specific spots
 }

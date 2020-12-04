@@ -54,6 +54,42 @@ class _SpotController {
 
         return res.json({spot: savedSpot});
     }
+
+    async getSpots(req, res) {
+        let {searchItem, limit, offset } = req.query;
+
+        if (!searchItem) searchItem = "";
+        if (!limit) limit = 10;
+        if (!offset) offset = 0;
+
+        
+        const searchRegex = new RegExp(searchItem);
+        //search by country
+        const spots = await Promise.all([
+            Spot.find({"address.country": {$regex: searchRegex, $options: 'i'}}).sort({updated: -1}).skip(limit * offset).limit(limit)
+            .populate('mainAuthor', 'username'),
+            Spot.find({"address.city": {$regex: searchRegex, $options: 'i'}}).sort({updated: -1}).skip(limit * offset).limit(limit)
+            .populate('mainAuthor', 'username'),
+            Spot.find({"name": {$regex: searchRegex, $options: 'i'}}).sort({updated: -1}).skip(limit * offset).limit(limit)
+            .populate('mainAuthor', 'username')
+        ]);
+        const rep = []
+
+        spots.forEach(ps => {
+            ps.forEach(p => {
+                const index = rep.findIndex(m => m.spot._id === p._id)
+                if (index === -1) {
+                    rep.push({count: 1, spot : p});
+                } else {
+                    rep[index].count ++;
+                }
+            });
+        });
+
+        return res.json({
+            spots: rep.sort((a, b) => a.count < b.count ? -1 : 1).map(r => r.spot)
+        });
+    }
 }
 
 const SpotController = new _SpotController();
