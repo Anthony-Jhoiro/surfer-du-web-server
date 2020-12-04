@@ -1,5 +1,6 @@
 const AuthentificationController = require("./controllers/AuthentificationController");
 const SpotController = require("./controllers/SpotController");
+const FormulaireController = require("./controllers/FormulaireController");
 const AuthenticationMiddleware = require("./middlewares/AuthenticationMiddleware");
 
 exports.loadRoutes = app => {
@@ -22,4 +23,7 @@ exports.loadRoutes = app => {
     // Get all spots
     app.get('/api/spot', SpotController.getSpots);
     // Get specific spots
+
+    // Form creation
+    app.post('/api/formulaire', FormulaireController.createFormulaire);
 }
