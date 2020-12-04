@@ -27,6 +27,9 @@ class _AuthentificationController {
         // Récupérer les infos de l'utilisateur
 
         const { username, email, password } = req.body;
+        if(!(username && email && password))
+            return res.status(400).send("BAD_REQUEST");
+
         if (!USERNAME_REGEX.test(username)) {
             return res.status(400).send("INVALID_USERNAME");
         }
